@@ -1,73 +1,224 @@
-import React from 'react';
-import { Cloud, Zap, Code, Database, Cpu, Globe, Terminal, Wifi, Server, Layers } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
 
-const FloatingClouds = () => {
-  const cloudElements = [
-    // Main cloud icons - larger and more prominent
-    { Icon: Cloud, size: 28, delay: 0, top: '12%', left: '8%', opacity: 0.25, duration: 8 },
-    { Icon: Cloud, size: 32, delay: 1.5, top: '18%', right: '12%', opacity: 0.22, duration: 10 },
-    { Icon: Cloud, size: 24, delay: 3, top: '35%', left: '5%', opacity: 0.28, duration: 9 },
-    { Icon: Cloud, size: 30, delay: 4.5, top: '55%', right: '8%', opacity: 0.24, duration: 11 },
-    { Icon: Cloud, size: 26, delay: 2, top: '75%', left: '12%', opacity: 0.26, duration: 8.5 },
-    { Icon: Cloud, size: 34, delay: 6, top: '88%', right: '15%', opacity: 0.20, duration: 12 },
+const DraggablePlanet = ({ size, initialX, initialY, color, glowIntensity, children }) => {
+  const [position, setPosition] = useState({ x: initialX, y: initialY });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const planetRef = useRef(null);
+
+  const handleStart = (clientX, clientY) => {
+    if (!planetRef.current) return;
     
-    // Tech icons - smaller and more subtle
-    { Icon: Zap, size: 16, delay: 1, top: '8%', left: '75%', opacity: 0.18, duration: 7 },
-    { Icon: Code, size: 18, delay: 2.5, top: '25%', right: '22%', opacity: 0.20, duration: 9.5 },
-    { Icon: Database, size: 17, delay: 4, top: '42%', right: '25%', opacity: 0.16, duration: 8.5 },
-    { Icon: Cpu, size: 15, delay: 0.8, top: '60%', left: '85%', opacity: 0.19, duration: 10.5 },
-    { Icon: Globe, size: 19, delay: 3.2, top: '78%', right: '30%', opacity: 0.17, duration: 9 },
-    { Icon: Terminal, size: 16, delay: 5, top: '15%', left: '18%', opacity: 0.15, duration: 11.5 },
-    { Icon: Wifi, size: 14, delay: 1.8, top: '48%', left: '90%', opacity: 0.16, duration: 7.5 },
-    { Icon: Server, size: 17, delay: 3.7, top: '32%', left: '25%', opacity: 0.18, duration: 10 },
-    { Icon: Layers, size: 15, delay: 0.5, top: '65%', right: '35%', opacity: 0.14, duration: 8.8 },
-  ];
+    const rect = planetRef.current.getBoundingClientRect();
+    const offsetX = clientX - rect.left;
+    const offsetY = clientY - rect.top;
+    
+    setDragOffset({ x: offsetX, y: offsetY });
+    setIsDragging(true);
+  };
+
+  const handleMove = (clientX, clientY) => {
+    if (!isDragging) return;
+    
+    const newX = clientX - dragOffset.x;
+    const newY = clientY - dragOffset.y;
+    
+    // Keep within viewport bounds
+    const maxX = window.innerWidth - size;
+    const maxY = window.innerHeight - size;
+    
+    setPosition({
+      x: Math.max(0, Math.min(newX, maxX)),
+      y: Math.max(0, Math.min(newY, maxY))
+    });
+  };
+
+  const handleEnd = () => {
+    setIsDragging(false);
+  };
+
+  // Mouse events
+  const handleMouseDown = (e) => {
+    e.preventDefault();
+    handleStart(e.clientX, e.clientY);
+  };
+
+  const handleMouseMove = (e) => {
+    handleMove(e.clientX, e.clientY);
+  };
+
+  // Touch events
+  const handleTouchStart = (e) => {
+    e.preventDefault();
+    const touch = e.touches[0];
+    handleStart(touch.clientX, touch.clientY);
+  };
+
+  const handleTouchMove = (e) => {
+    e.preventDefault();
+    const touch = e.touches[0];
+    handleMove(touch.clientX, touch.clientY);
+  };
+
+  useEffect(() => {
+    if (isDragging) {
+      const handleMouseMoveGlobal = (e) => handleMouseMove(e);
+      const handleMouseUpGlobal = () => handleEnd();
+      const handleTouchMoveGlobal = (e) => {
+        const touch = e.touches[0];
+        if (touch) handleMove(touch.clientX, touch.clientY);
+      };
+      const handleTouchEndGlobal = () => handleEnd();
+
+      document.addEventListener('mousemove', handleMouseMoveGlobal);
+      document.addEventListener('mouseup', handleMouseUpGlobal);
+      document.addEventListener('touchmove', handleTouchMoveGlobal, { passive: false });
+      document.addEventListener('touchend', handleTouchEndGlobal);
+
+      return () => {
+        document.removeEventListener('mousemove', handleMouseMoveGlobal);
+        document.removeEventListener('mouseup', handleMouseUpGlobal);
+        document.removeEventListener('touchmove', handleTouchMoveGlobal);
+        document.removeEventListener('touchend', handleTouchEndGlobal);
+      };
+    }
+  }, [isDragging, dragOffset]);
 
   return (
-    <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-      {cloudElements.map((element, index) => {
-        const { Icon, size, delay, opacity, duration, ...position } = element;
-        
-        return (
-          <div
-            key={index}
-            className="absolute text-[var(--accent-primary)]"
-            style={{
-              ...position,
-              animationDelay: `${delay}s`,
-              opacity: opacity,
-            }}
-          >
-            <div 
-              className="animate-float-enhanced"
-              style={{
-                filter: 'blur(0.3px)',
-                animationDuration: `${duration}s`,
-                animationDelay: `${delay}s`,
-              }}
-            >
-              <Icon size={size} strokeWidth={1.2} />
-            </div>
-          </div>
-        );
-      })}
-      
-      {/* Enhanced floating particles with varying sizes */}
-      <div className="absolute top-1/4 left-1/3 w-1.5 h-1.5 bg-[var(--accent-primary)] rounded-full opacity-25 animate-particle-float" style={{ animationDelay: '0.5s' }}></div>
-      <div className="absolute top-3/4 right-1/4 w-1 h-1 bg-[var(--accent-primary)] rounded-full opacity-30 animate-particle-float" style={{ animationDelay: '2.5s' }}></div>
-      <div className="absolute top-1/2 left-1/5 w-2 h-2 bg-[var(--accent-primary)] rounded-full opacity-20 animate-particle-float" style={{ animationDelay: '4s' }}></div>
-      <div className="absolute top-2/3 right-1/3 w-0.5 h-0.5 bg-[var(--accent-primary)] rounded-full opacity-35 animate-particle-float" style={{ animationDelay: '1.8s' }}></div>
-      <div className="absolute top-1/6 right-1/6 w-1.5 h-1.5 bg-[var(--accent-primary)] rounded-full opacity-22 animate-particle-float" style={{ animationDelay: '3.2s' }}></div>
-      
-      {/* Subtle geometric shapes for tech feel */}
-      <div className="absolute top-1/5 right-1/5 w-3 h-3 border border-[var(--accent-primary)] opacity-12 rotate-45 animate-geometric-float" style={{ animationDelay: '2.8s' }}></div>
-      <div className="absolute bottom-1/4 left-1/4 w-2 h-2 border border-[var(--accent-primary)] opacity-15 animate-geometric-float" style={{ animationDelay: '1.5s' }}></div>
-      <div className="absolute top-2/5 right-2/5 w-1.5 h-1.5 border border-[var(--accent-primary)] opacity-18 rotate-12 animate-geometric-float" style={{ animationDelay: '4.2s' }}></div>
-      
-      {/* Subtle gradient overlay for depth */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[var(--bg-primary)] opacity-60 pointer-events-none"></div>
+    <div
+      ref={planetRef}
+      className={`absolute cursor-grab ${isDragging ? 'cursor-grabbing' : ''} select-none`}
+      style={{
+        left: position.x,
+        top: position.y,
+        width: size,
+        height: size,
+        transform: isDragging ? 'scale(1.1)' : 'scale(1)',
+        transition: isDragging ? 'none' : 'transform 0.2s ease',
+        zIndex: isDragging ? 50 : 10,
+      }}
+      onMouseDown={handleMouseDown}
+      onTouchStart={handleTouchStart}
+    >
+      <div
+        className="w-full h-full rounded-full relative"
+        style={{
+          background: `radial-gradient(circle at 30% 30%, ${color}40, ${color}20, ${color}10)`,
+          boxShadow: `0 0 ${glowIntensity}px ${color}60, inset 0 0 ${glowIntensity/2}px ${color}30`,
+          border: `1px solid ${color}30`,
+        }}
+      >
+        {children}
+        {/* Inner glow */}
+        <div 
+          className="absolute inset-1 rounded-full opacity-40"
+          style={{
+            background: `radial-gradient(circle at 25% 25%, ${color}60, transparent 60%)`,
+          }}
+        />
+      </div>
     </div>
   );
 };
 
-export default FloatingClouds;
+const FloatingPlanets = () => {
+  const planets = [
+    {
+      id: 1,
+      size: 60,
+      initialX: window.innerWidth * 0.1,
+      initialY: window.innerHeight * 0.15,
+      color: '#DAFF01',
+      glowIntensity: 20,
+    },
+    {
+      id: 2,
+      size: 45,
+      initialX: window.innerWidth * 0.85,
+      initialY: window.innerHeight * 0.25,
+      color: '#7F4A8E',
+      glowIntensity: 15,
+    },
+    {
+      id: 3,
+      size: 35,
+      initialX: window.innerWidth * 0.15,
+      initialY: window.innerHeight * 0.6,
+      color: '#DAFF01',
+      glowIntensity: 12,
+    },
+    {
+      id: 4,
+      size: 50,
+      initialX: window.innerWidth * 0.8,
+      initialY: window.innerHeight * 0.7,
+      color: '#7F4A8E',
+      glowIntensity: 18,
+    },
+    {
+      id: 5,
+      size: 30,
+      initialX: window.innerWidth * 0.25,
+      initialY: window.innerHeight * 0.35,
+      color: '#DAFF01',
+      glowIntensity: 10,
+    },
+    {
+      id: 6,
+      size: 40,
+      initialX: window.innerWidth * 0.7,
+      initialY: window.innerHeight * 0.5,
+      color: '#7F4A8E',
+      glowIntensity: 14,
+    },
+  ];
+
+  return (
+    <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+      {/* Enable pointer events only for planets */}
+      <div className="absolute inset-0 pointer-events-auto">
+        {planets.map((planet) => (
+          <DraggablePlanet
+            key={planet.id}
+            size={planet.size}
+            initialX={planet.initialX}
+            initialY={planet.initialY}
+            color={planet.color}
+            glowIntensity={planet.glowIntensity}
+          >
+            {/* Optional: Add subtle animation rings */}
+            <div 
+              className="absolute inset-0 rounded-full animate-ping opacity-20"
+              style={{
+                border: `1px solid ${planet.color}`,
+                animationDuration: '3s',
+                animationDelay: `${planet.id * 0.5}s`,
+              }}
+            />
+          </DraggablePlanet>
+        ))}
+      </div>
+
+      {/* Subtle star field */}
+      <div className="absolute inset-0 opacity-30">
+        {[...Array(20)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute w-0.5 h-0.5 bg-[var(--accent-primary)] rounded-full animate-pulse"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 3}s`,
+              animationDuration: `${2 + Math.random() * 2}s`,
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Gradient overlay for depth */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[var(--bg-primary)] opacity-40 pointer-events-none"></div>
+    </div>
+  );
+};
+
+export default FloatingPlanets;
