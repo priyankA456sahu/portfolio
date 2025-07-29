@@ -39,7 +39,7 @@ const Portfolio = () => {
 
   return (
     <div className="min-h-screen bg-[var(--bg-primary)] relative overflow-hidden">
-      <FloatingClouds />
+      <FloatingPlanets />
       <Header />
       <main>
         <Hero data={data.hero} />
