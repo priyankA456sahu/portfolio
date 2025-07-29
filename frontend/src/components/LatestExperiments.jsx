@@ -52,7 +52,7 @@ const LatestExperiments = ({ data }) => {
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center gap-3">
                     <div className="p-3 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border-subtle)]">
-                      <Flask size={24} className="text-[var(--accent-primary)]" />
+                      <Beaker size={24} className="text-[var(--accent-primary)]" />
                     </div>
                     <div>
                       <h3 className="h3 text-[var(--text-primary)] group-hover:text-[var(--accent-primary)] transition-colors">
