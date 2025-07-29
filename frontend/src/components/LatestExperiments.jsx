@@ -1,5 +1,5 @@
 import React from 'react';
-import { Flask, Zap, Calendar, ArrowRight } from 'lucide-react';
+import { Beaker, Zap, Calendar, ArrowRight } from 'lucide-react';
 
 const LatestExperiments = ({ data }) => {
   const getStatusIcon = (status) => {
