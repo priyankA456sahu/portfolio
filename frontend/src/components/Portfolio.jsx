@@ -11,7 +11,7 @@ import LearningJourney from './LearningJourney';
 import LatestExperiments from './LatestExperiments';
 import Contact from './Contact';
 import Footer from './Footer';
-import FloatingClouds from './FloatingClouds';
+import FloatingPlanets from './FloatingPlanets';
 
 const Portfolio = () => {
   const [data, setData] = useState(portfolioData);
