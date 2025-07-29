@@ -30,7 +30,7 @@ const LatestExperiments = ({ data }) => {
         {/* Section Header */}
         <div className="text-center mb-16">
           <div className="flex items-center justify-center gap-3 mb-4">
-            <Flask size={32} className="text-[var(--accent-primary)]" />
+            <Beaker size={32} className="text-[var(--accent-primary)]" />
             <h2 className="display-md text-[var(--text-primary)]">Latest Experiments</h2>
           </div>
           <div className="w-24 h-1 bg-[var(--accent-primary)] mx-auto rounded-full"></div>
