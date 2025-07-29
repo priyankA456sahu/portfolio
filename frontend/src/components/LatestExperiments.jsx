@@ -9,7 +9,7 @@ const LatestExperiments = ({ data }) => {
       case 'planning':
         return <Calendar size={16} className="text-[var(--accent-purple)]" />;
       default:
-        return <Flask size={16} className="text-[var(--text-muted)]" />;
+        return <Beaker size={16} className="text-[var(--text-muted)]" />;
     }
   };
 
