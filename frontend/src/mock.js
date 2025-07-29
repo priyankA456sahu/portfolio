@@ -4,7 +4,7 @@ export const portfolioData = {
   hero: {
     name: "Shreeya Swarupa Das",
     headline: "Crafting Scalable Cloud Solutions with Creativity and Code",
-    profileImage: "https://images.unsplash.com/photo-1573496358961-3c82861ab8f4?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2Nzh8MHwxfHNlYXJjaHwyfHxwcm9mZXNzaW9uYWwlMjBoZWFkc2hvdHxlbnwwfHx8fDE3NTM3MzAwMDR8MA&ixlib=rb-4.1.0&q=85",
+    profileImage: "https://images.unsplash.com/photo-1560250097-0b93528c311a?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1ODB8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBoZWFkc2hvdHxlbnwwfHx8fDE3NTM4MDI0Nzd8MA&ixlib=rb-4.1.0&q=85",
     highlights: ["Cloud Lover", "AI Explorer", "Fast Learner"]
   },
   
