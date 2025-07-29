@@ -114,7 +114,7 @@ const LatestExperiments = ({ data }) => {
             <div className="grid md:grid-cols-3 gap-6 mb-8">
               <div>
                 <div className="w-16 h-16 bg-[var(--accent-bg)] rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Flask size={32} className="text-[var(--accent-primary)]" />
+                  <Beaker size={32} className="text-[var(--accent-primary)]" />
                 </div>
                 <h4 className="h4 text-[var(--text-primary)] mb-2">Explore</h4>
                 <p className="body-sm text-[var(--text-secondary)]">
